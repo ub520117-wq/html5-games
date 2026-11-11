@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="color-scheme" content="light dark"/>
+<meta name="description" content="Play free HTML5 games online — Snake, 2048, Memory Match, Breakout, Flappy, Minesweeper and more. No download, no sign-up. Works on mobile and desktop."/>
+<meta name="robots" content="index, follow"/>
+<meta name="theme-color" content="#ff4d1c"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="HTML5 Games — Play Free Online Games, No Download"/>
+<meta property="og:description" content="Seven free browser games — Snake, 2048, Memory Match, Breakout, Flappy Jump, Minesweeper and Tic Tac Toe. No download, no sign-up."/>
+<!-- Google AdSense — deployment steps for the site owner (do these on your own domain/hosting, in this order):
+  1. Add this site in your AdSense account (Sites → Add site), then verify ownership with ONE of:
+     a) Paste the adsbygoogle.js loader script AdSense gives you on the line below (it carries your own ca-pub- ID — never use another site's code), or
+     b) Paste the meta tag AdSense gives you here: <meta name="google-adsense-account" content="ca-pub-XXXXXXXXXXXXXXXX">, or
+     c) Publish ads.txt at your domain root (see step 2).
+  2. ads.txt (highly recommended): create a file named ads.txt at https://yourdomain.com/ads.txt containing exactly one line with YOUR publisher ID:
+     google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+  3. In AdSense, click Verify, then Request review. Review usually takes a few days, sometimes 2–4 weeks.
+  4. Choose a consent option when asked — Google's own CMP automatically creates the European regulations (EEA/UK/Switzerland) consent message.
+  5. Do NOT add ad units or empty ad slots before approval — only the verification snippet above belongs on the site until the site status is "Ready". -->
+<link rel="icon" href="data:,"/>
+<title>HTML5 Games — Play Free Online Games, No Download</title>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"HTML5 Games","description":"Free HTML5 browser games: Snake, 2048, Memory Match, Breakout, Flappy Jump, Minesweeper and Tic Tac Toe.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Are these games really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every game on this page is free to play in your browser. There is no sign-up, no download and no in-game payment required to start playing."}},
+{"@type":"Question","name":"Do I need to install anything?","acceptedAnswer":{"@type":"Answer","text":"No. These are HTML5 games, so they run inside Chrome, Edge, Firefox, Safari and other modern browsers. Just open a game and press Play."}},
+{"@type":"Question","name":"Can I play on my phone?","acceptedAnswer":{"@type":"Answer","text":"Yes. The site and games are responsive. Tap-based games work with touch, Snake includes on-screen direction buttons, and Breakout and Flappy respond to taps and swipes."}},
+{"@type":"Question","name":"Which game is best for a quick 2-minute break?","acceptedAnswer":{"@type":"Answer","text":"Flappy Jump, Snake and Tic Tac Toe are the fastest to start. For a longer session, try 2048, Minesweeper or Breakout."}}
+]}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=DM+Sans:wght@400;500;700;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --bg2:#f6f7f9; --card:#ffffff; --ink:#0f172a; --muted:#5b6b82; --line:#e6eaf0;
+  --orange:#ff4d1c; --teal:#00a896; --yellow:#ffb800; --blue:#1366ff; --pink:#ff2e7e; --lime:#6ac100;
+  --nav:#ffffff; --shadow:0 10px 30px rgba(15,23,42,.08); --player:#0b1220;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0a0f1e; --bg2:#0f1628; --card:#121a2e; --ink:#f1f5f9; --muted:#9fb0c3; --line:#22304d; --nav:#0a0f1e; --shadow:0 10px 30px rgba(0,0,0,.35); --player:#070b16; }
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font-family:"DM Sans",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+a{color:inherit;text-decoration:none} button,input{font:inherit}
+.wrap{width:min(1180px,92%);margin:0 auto}
+header{position:sticky;top:0;z-index:50;background:var(--nav);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0}
+.logo{display:flex;align-items:center;gap:10px;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:22px;letter-spacing:-.02em}
+.logo-mark{width:38px;height:38px;border-radius:10px;background:var(--orange);display:grid;place-items:center;color:#fff;font-size:20px}
+.navlinks{display:flex;gap:22px;font-weight:700;font-size:15px;color:var(--muted)}
+.navlinks a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;font-weight:900;border-radius:999px;padding:12px 20px;background:var(--ink);color:var(--bg)}
+.btn-orange{background:var(--orange);color:#fff} .btn-teal{background:var(--teal);color:#fff}
+.btn-outline{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.hero{padding:42px 0 10px;display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center}
+.hero h1{font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(38px,6vw,64px);line-height:.95;letter-spacing:-.03em;margin:10px 0 14px}
+.hero h1 span{color:var(--orange)} .hero p{color:var(--muted);font-size:18px;max-width:560px}
+.badge{display:inline-flex;gap:8px;align-items:center;background:#fff3e8;color:#9a3412;border:1px solid #ffd9c2;padding:6px 12px;border-radius:999px;font-weight:800;font-size:13px}
+@media(prefers-color-scheme:dark){.badge{background:#2a1608;color:#fdba74;border-color:#7c2d12}}
+.stats{display:flex;gap:18px;flex-wrap:wrap;margin-top:22px}.stat b{font-size:22px;display:block;line-height:1}.stat span{color:var(--muted);font-size:13px;font-weight:700}
+.hero-card{background:var(--player);color:#fff;border-radius:20px;padding:18px;box-shadow:var(--shadow)}
+.hero-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-weight:800}
+.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mini{border-radius:14px;padding:16px;min-height:92px;display:flex;flex-direction:column;justify-content:space-between;font-weight:900;cursor:pointer;border:0;text-align:left;color:#0f172a}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:28px 0 16px}
+.search{flex:1;min-width:220px;display:flex;gap:8px}.search input{flex:1;padding:13px 16px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);outline:none}
+.pills{display:flex;gap:8px;flex-wrap:wrap}.pill{padding:9px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);font-weight:800;cursor:pointer;color:var(--muted)}
+.pill.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.section{padding:34px 0}.section h2{font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(28px,4vw,40px);letter-spacing:-.02em;line-height:1.05;margin:0 0 8px}.section .lead{color:var(--muted);max-width:720px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.thumb{height:150px;display:flex;align-items:flex-end;padding:14px;color:#fff;position:relative;overflow:hidden}
+.thumb b{font-family:"JetBrains Mono",monospace;font-size:13px;background:rgba(0,0,0,.35);padding:5px 9px;border-radius:999px}
+.thumb .big{position:absolute;right:14px;top:10px;font-size:64px;line-height:1;opacity:.95}
+.card-body{padding:16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card-body h3{margin:0;font-size:20px}.card-body p{margin:0;color:var(--muted);font-size:14.5px;flex:1}
+.meta{display:flex;gap:8px;flex-wrap:wrap}.tag{font-size:12px;font-weight:900;padding:4px 8px;border-radius:999px;background:var(--bg2);border:1px solid var(--line)}
+.play{width:100%;margin-top:6px}
+/* PLAYER */
+.player-wrap{background:var(--player);color:#fff;border-radius:20px;overflow:hidden;margin-top:10px}
+.player-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.12);flex-wrap:wrap}
+.player-head b{font-size:18px}.player-actions{display:flex;gap:8px;flex-wrap:wrap}
+.pbtn{background:#1e293b;color:#fff;border:1px solid #334155;padding:9px 13px;border-radius:999px;font-weight:800;cursor:pointer}
+.pbtn.primary{background:var(--orange);border-color:var(--orange)}
+#stage{padding:18px;display:flex;flex-direction:column;align-items:center;gap:14px;min-height:420px;justify-content:center}
+#stage canvas{max-width:100%;height:auto;background:#0f172a;border-radius:12px;border:1px solid #334155;touch-action:none}
+.hud{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}.hud span{background:#1e293b;border:1px solid #334155;padding:7px 12px;border-radius:999px;font-weight:800;font-size:14px}
+.help{color:#cbd5e1;font-size:14px;text-align:center;max-width:640px}
+.touch{display:none;gap:8px}.touch button{width:56px;height:56px;border-radius:14px;border:1px solid #334155;background:#1e293b;color:#fff;font-size:20px}
+@media(pointer:coarse){.touch{display:flex}}
+/* DOM games */
+.mem{display:grid;grid-template-columns:repeat(4,72px);gap:10px}
+.mem button{height:72px;border-radius:14px;border:0;font-size:30px;cursor:pointer;background:#1e293b;color:#fff}
+.mem button.open{background:#fff;color:#0f172a}.mem button.done{background:var(--teal);color:#fff}
+.g2048{display:grid;grid-template-columns:repeat(4,76px);gap:8px;background:#1e293b;padding:10px;border-radius:14px}
+.g2048 div{height:76px;border-radius:10px;display:grid;place-items:center;font-weight:900;font-size:22px;background:#334155;color:#fff}
+.ttt{display:grid;grid-template-columns:repeat(3,92px);gap:8px}.ttt button{height:92px;font-size:38px;font-weight:900;border-radius:14px;border:0;background:#fff;color:#0f172a;cursor:pointer}
+.mine{display:grid;grid-template-columns:repeat(9,36px);gap:4px}.mine button{width:36px;height:36px;border-radius:8px;border:0;background:#334155;color:#fff;font-weight:900;cursor:pointer;padding:0}.mine button.open{background:#e2e8f0;color:#0f172a}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}.box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}.box h3{margin-top:0}
+.catgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}.cat{padding:18px;border-radius:16px;color:#fff}.cat h3{margin:0 0 6px}.cat p{margin:0;opacity:.92;font-size:14px}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:10px} summary{font-weight:900;cursor:pointer} details p{color:var(--muted)}
+.prose{color:var(--muted)} .prose b{color:var(--ink)}
+.guides{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
+.guide{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}
+.guide h3{margin:0 0 8px;font-size:19px}.guide h3 span{margin-right:8px}
+.guide p{margin:0 0 10px;color:var(--muted);font-size:14.5px}.guide p:last-child{margin-bottom:0}
+.guide .gmeta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.policy{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:var(--shadow)}
+.policy h3{margin:20px 0 6px;font-size:17px}.policy h3:first-of-type{margin-top:6px}
+.policy p,.policy li{color:var(--muted);font-size:15px}.policy ul{margin:6px 0 10px;padding-left:22px}
+.policy a{color:var(--blue);font-weight:700;text-decoration:underline}
+.updated{font-size:13px;font-weight:800;color:var(--muted)}
+.cform{display:grid;gap:12px;max-width:560px;margin-top:14px}
+.cform label{font-weight:800;font-size:14px;display:grid;gap:6px}
+.cform input,.cform textarea{padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);outline:none;font:inherit}
+.touch.always{display:flex}
+@media(max-width:900px){.guides{grid-template-columns:1fr}}
+footer{border-top:1px solid var(--line);margin-top:30px;padding:28px 0 36px;color:var(--muted);font-size:14px}
+.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+dialog{border:1px solid var(--line);border-radius:18px;padding:24px;max-width:640px;width:92%;background:var(--card);color:var(--ink)} dialog::backdrop{background:rgba(0,0,0,.5)}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.catgrid{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.navlinks{display:none}}
+@media(max-width:560px){.grid{grid-template-columns:1fr}.catgrid{grid-template-columns:1fr}.mem{grid-template-columns:repeat(4,62px)}.mem button{height:62px}.g2048{grid-template-columns:repeat(4,64px)}.g2048 div{height:64px}.ttt{grid-template-columns:repeat(3,84px)}.ttt button{height:84px}.mine{grid-template-columns:repeat(9,32px)}.mine button{width:32px;height:32px}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="logo" href="#top"><span class="logo-mark">▶</span> HTML5 Games</a>
+  <nav class="navlinks"><a href="#games">All Games</a><a href="#guides">Game Guides</a><a href="#articles">Articles</a><a href="#categories">Categories</a><a href="#how">How to Play</a><a href="#faq">FAQ</a><a href="#about">About</a><a href="#contact">Contact</a></nav>
+  <a class="btn btn-orange" href="#games" style="padding:10px 16px">Play Now</a>
+</div></header>
+
+<main id="top" class="wrap">
+  <section class="hero">
+    <div>
+      <span class="badge">● 100% Free • No Download • No Sign-up</span>
+      <h1>Play free games <span>instantly</span> in your browser.</h1>
+      <p>Snake, 2048, Memory Match, Breakout, Flappy, Minesweeper and Tic Tac Toe — every game runs right here on this page. Open a game, tap Play, and start in seconds on mobile or desktop.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+        <button class="btn btn-orange" onclick="openGame('snake')">▶ Play Snake</button>
+        <button class="btn btn-outline" onclick="openGame('g2048')">Play 2048</button>
+        <a class="btn" href="#games">Browse All Games</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>7</b><span>Playable games</span></div>
+        <div class="stat"><b>0</b><span>Downloads needed</span></div>
+        <div class="stat"><b>Mobile + PC</b><span>Works everywhere</span></div>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-card-top"><span>🔥 Trending Now</span><span style="color:#94a3b8;font-size:13px">Tap to play</span></div>
+      <div class="mini-grid">
+        <button class="mini" style="background:#ffb800" onclick="openGame('snake')"><span>🐍 Snake</span><span>Classic • Easy</span></button>
+        <button class="mini" style="background:#7ee0d2" onclick="openGame('g2048')"><span>🔢 2048</span><span>Puzzle • Hard</span></button>
+        <button class="mini" style="background:#ff8fb3" onclick="openGame('memory')"><span>🧠 Memory Match</span><span>Brain • Medium</span></button>
+        <button class="mini" style="background:#a7c7ff" onclick="openGame('flappy')"><span>🐦 Flappy Jump</span><span>Arcade • Hard</span></button>
+      </div>
+      <p style="color:#cbd5e1;font-size:14px;margin:12px 0 0">No installation. Your score stays on the game screen while you play — challenge yourself to beat it.</p>
+    </div>
+  </section>
+
+  <!-- PLAYER -->
+  <section id="player" class="section" style="padding-top:8px">
+    <h2 id="playerTitle">Game Player — Snake</h2>
+    <p class="lead" id="playerDesc">Use arrow keys, WASD, or the on-screen buttons on mobile. Eat food, grow longer, and don't hit the wall or yourself.</p>
+    <div class="player-wrap">
+      <div class="player-head">
+        <b id="nowPlaying">Now Playing: Snake</b>
+        <div class="player-actions">
+          <button class="pbtn primary" id="restartBtn">↻ Restart</button>
+          <button class="pbtn" id="pauseBtn">⏸ Pause</button>
+          <button class="pbtn" onclick="document.getElementById('player').scrollIntoView({behavior:'smooth'})">⛶ Focus Player</button>
+        </div>
+      </div>
+      <div id="stage"></div>
+    </div>
+  </section>
+
+  <!-- GAMES -->
+  <section id="games" class="section">
+    <h2>All Games</h2>
+    <p class="lead">Search or filter by category. Every game below is fully playable — no fake thumbnails, no external downloads.</p>
+    <div class="toolbar">
+      <div class="search"><input id="search" type="search" placeholder="Search games… e.g. snake, puzzle, memory" aria-label="Search games"></div>
+      <div class="pills" id="pills">
+        <button class="pill active" data-f="all">All</button>
+        <button class="pill" data-f="arcade">Arcade</button>
+        <button class="pill" data-f="puzzle">Puzzle</button>
+        <button class="pill" data-f="brain">Brain</button>
+        <button class="pill" data-f="classic">Classic</button>
+      </div>
+    </div>
+    <div class="grid" id="gameGrid"></div>
+    <p id="noResult" style="display:none;color:var(--muted);font-weight:700">No game found. Try “snake”, “2048” or “memory”.</p>
+  </section>
+
+  <!-- GUIDES -->
+  <section id="guides" class="section">
+    <h2>Game Guides — Rules, Controls & Winning Tips</h2>
+    <p class="lead">New to a game? Each guide below explains the goal, the exact controls, and the strategy experienced players use. Read the guide, then jump into the player and try it yourself.</p>
+    <div class="guides">
+      <article class="guide"><h3><span>🐍</span>Snake — the original arcade classic</h3><div class="gmeta"><span class="tag">Arcade</span><span class="tag">Easy</span><span class="tag">2–5 min</span></div>
+        <p><b>Goal:</b> Eat the red food squares to grow longer and score 10 points each. The game ends if you hit a wall or bite your own tail.</p>
+        <p><b>Controls:</b> Arrow keys or WASD on desktop; the on-screen direction pad on mobile. The snake cannot turn 180° — plan your turns one step ahead.</p>
+        <p><b>Strategy:</b> Early on, roam the centre where you have escape routes on every side. As you grow, travel in wide loops along the edges and never chase food into a corner your own body is closing off. The tail end is always moving, so a gap that looks blocked often opens a second later.</p></article>
+      <article class="guide"><h3><span>🔢</span>2048 — the number-merging puzzle</h3><div class="gmeta"><span class="tag">Puzzle</span><span class="tag">Hard</span><span class="tag">5–15 min</span></div>
+        <p><b>Goal:</b> Slide all tiles in one direction; two equal tiles that collide merge into their double. Build your way up to a 2048 tile. The game ends when the board is full and no two neighbours match.</p>
+        <p><b>Controls:</b> Arrow keys or WASD on desktop; the direction buttons under the board on mobile.</p>
+        <p><b>Strategy:</b> Pick one corner — most players use the bottom-left — and keep your largest tile locked there. Use only three of the four directions so the big tile never floats away, and build a descending "snake" of tiles next to it so merges chain in order.</p></article>
+      <article class="guide"><h3><span>🧠</span>Memory Match — train your recall</h3><div class="gmeta"><span class="tag">Brain</span><span class="tag">Medium</span><span class="tag">2–4 min</span></div>
+        <p><b>Goal:</b> Sixteen cards hide eight matching fruit pairs. Flip two at a time and find all eight pairs in as few moves as possible.</p>
+        <p><b>Controls:</b> Tap or click any face-down card to flip it.</p>
+        <p><b>Strategy:</b> Work in a fixed pattern — sweep row by row instead of flipping randomly — and say each card's position out loud as you reveal it ("apple, top-left"). When you uncover a card whose mate you have already seen, take that pair immediately before flipping anything new.</p></article>
+      <article class="guide"><h3><span>🧱</span>Breakout — paddle, ball and bricks</h3><div class="gmeta"><span class="tag">Arcade</span><span class="tag">Medium</span><span class="tag">3–6 min</span></div>
+        <p><b>Goal:</b> Bounce the ball off your paddle to smash all 40 bricks. You have three lives; every brick is worth 10 points.</p>
+        <p><b>Controls:</b> Move the mouse or drag a finger to slide the paddle, or use the ← → arrow keys. Click the board (or press Space) to launch the ball.</p>
+        <p><b>Strategy:</b> Where the ball lands on the paddle controls the rebound: hits near the edge send it off at a sharp angle, centre hits send it straight up. Use edge hits to tunnel up one side — once the ball is above the brick wall it will clear several rows on its own.</p></article>
+      <article class="guide"><h3><span>🐦</span>Flappy Jump — one-tap timing</h3><div class="gmeta"><span class="tag">Arcade</span><span class="tag">Hard</span><span class="tag">1–3 min</span></div>
+        <p><b>Goal:</b> Flap through the gaps in the green pipes. Each gap you clear scores one point; touching a pipe or the ground ends the run.</p>
+        <p><b>Controls:</b> Click the board, tap the Start / Flap button, or press Space — every tap is one flap.</p>
+        <p><b>Strategy:</b> Fly in a rhythm, not in reactions. Let the bird sink to the lower third of the next gap, then give one firm flap. Two quick panicked taps almost always push you into the top pipe, so after each flap, wait and watch before tapping again.</p></article>
+      <article class="guide"><h3><span>❌</span>Tic Tac Toe — beat the computer</h3><div class="gmeta"><span class="tag">Classic</span><span class="tag">Easy</span><span class="tag">1–2 min</span></div>
+        <p><b>Goal:</b> You play X. Make three in a row — across, down, or diagonally — before the computer does. It wins if it can, and blocks your winning move if it spots one.</p>
+        <p><b>Controls:</b> Tap or click any empty square.</p>
+        <p><b>Strategy:</b> Open in a corner, not the centre. If the computer takes the centre in reply, play the opposite corner to set up a "fork" — two separate lines that each need one more X. A fork cannot be blocked in a single move, so it is the reliable way to beat a defensive opponent.</p></article>
+      <article class="guide"><h3><span>💣</span>Minesweeper — pure deduction</h3><div class="gmeta"><span class="tag">Puzzle</span><span class="tag">Hard</span><span class="tag">5–10 min</span></div>
+        <p><b>Goal:</b> Reveal all 71 safe squares on a 9×9 board without uncovering any of the 10 hidden mines. Your first click is always safe. Numbers tell you exactly how many mines touch that square.</p>
+        <p><b>Controls:</b> Tap a square to reveal it. Switch Flag Mode ON and tap a square to mark a suspected mine so you cannot click it by accident.</p>
+        <p><b>Strategy:</b> Start from the numbers, not the empty space. A "1" touching only one covered square means that square is certainly a mine — flag it, and every other square touching that "1" is then safe to open. Work the edges of the revealed area and let the numbers eliminate each other.</p></article>
+      <article class="guide"><h3><span>⭐</span>Which game should you play first?</h3><div class="gmeta"><span class="tag">Start here</span></div>
+        <p><b>Two spare minutes:</b> Tic Tac Toe or Flappy Jump — instant to start, over quickly, and always tempting for "one more try".</p>
+        <p><b>A coffee break:</b> Snake, Memory Match or Breakout — a satisfying run in under five minutes.</p>
+        <p><b>A proper session:</b> 2048 or Minesweeper. Both reward patience over reflexes, and a single good game can hold your attention for ten minutes or more. Every game on this page saves nothing and asks for nothing — press Restart and your only opponent is your last score.</p></article>
+    </div>
+  </section>
+
+  <!-- ARTICLES -->
+  <section id="articles" class="section">
+    <h2>Strategy Articles &amp; Game Stories</h2>
+    <p class="lead">Longer reads written for this site: deeper strategy for the two hardest games, the story of how browser games got here, and honest advice on getting better at reaction games.</p>
+    <div class="guides">
+      <article class="guide"><h3>How to reach the 2048 tile — the full method</h3><div class="gmeta"><span class="tag">2048</span><span class="tag">Strategy</span></div>
+        <p>The corner strategy in our 2048 guide wins games, but only if you handle the three moments that break it. <b>First, the forced fourth direction:</b> sometimes the board leaves you no move except pushing your big tile out of its corner. When that happens, make the move that disturbs the corner row least, then spend the next several moves rebuilding the row before doing anything clever. <b>Second, the blocked snake:</b> if a large tile lands in the middle of your descending chain, do not merge around it — merge <i>into</i> it from the small end and let the chain re-form behind it. <b>Third, the endgame:</b> below roughly 2,000 points of empty space the game becomes about survival, not score. Stop chasing merges, keep at least two empty squares at all times, and prefer any move that frees a square over any move that scores. Players who reach 2048 usually lose a dozen games in the 1,024-tile stage first — that stage is where the corner discipline is actually learned.</p></article>
+      <article class="guide"><h3>Minesweeper patterns that actually work</h3><div class="gmeta"><span class="tag">Minesweeper</span><span class="tag">Strategy</span></div>
+        <p>Expert Minesweeper is pattern recognition, not guessing. Learn these three and most boards open up. <b>The 1–2–1:</b> when a 1, a 2 and a 1 sit in a straight line along the edge of the opened area, the mines are under the squares diagonally in front of the two 1s, and the square in front of the 2 is safe. <b>The 1–2–2–1:</b> the mirror image — mines sit in front of the two inner squares' outer neighbours, and the two centre-front squares are safe. <b>The satisfied number:</b> whenever a number already touches exactly that many flags, every other covered square touching it is safe — this is the most common source of "free" squares mid-game. On this site's 9×9 board with 10 mines you will still occasionally face a true 50/50 guess at the very end. When you must guess, pick the square that touches the fewest unopened numbers — it carries the least chance of being a mine.</p></article>
+      <article class="guide"><h3>From Flash to HTML5: a short history of browser games</h3><div class="gmeta"><span class="tag">History</span><span class="tag">Browser games</span></div>
+        <p>Browser games began in the late 1990s as tiny Java applets and exploded in the 2000s with Adobe Flash, which let a single file hold animation, sound and code that ran on almost any computer. Portals hosting thousands of Flash games became many people's first gaming library. Flash had real costs, though: it was a closed plugin, heavy on batteries, and never allowed on iPhones. When HTML5 added the <i>canvas</i> element, audio and fast JavaScript to the open web standards themselves, the same kinds of games could be built with no plugin at all. Adobe ended Flash in 2020, and the games that survived were the ones rebuilt in HTML5 — which is why every title on this page is written in plain HTML, CSS and JavaScript: no plugin, nothing to install, and the same code runs on a school Chromebook, a phone, or a desktop PC.</p></article>
+      <article class="guide"><h3>Snake: how high scores are really built</h3><div class="gmeta"><span class="tag">Snake</span><span class="tag">Strategy</span></div>
+        <p>Beginners chase the food; experienced players manage space. The real skill in Snake is keeping an escape route that is always at least as long as your body needs to turn around. A reliable method is the <b>wall-follow</b>: pick a wall and travel along it in a slow spiral toward the centre, so your body packs into neat rows instead of scattered loops. Cut across the middle only for food that is clearly reachable, and always enter open space from the side nearest your tail — the tail is retreating, so that side keeps opening up. The classic beginner mistake is the celebration dash: grabbing three foods quickly in open space, then realising the only way out is through a gap your own neck is about to close. If a food looks risky, skip it. Food respawns; your run does not.</p></article>
+      <article class="guide"><h3>Reaction games: getting better at Flappy and Breakout</h3><div class="gmeta"><span class="tag">Arcade</span><span class="tag">Skills</span></div>
+        <p>Flappy Jump and Breakout punish the same habit: reacting late and then over-correcting. In Flappy, fix your eyes on the <i>next</i> gap, not on the bird — your thumb learns the rhythm faster when your eyes are one obstacle ahead. Keep a steady internal count ("down… flap, down… flap") and only break it when a gap is unusually high or low. In Breakout, watch the ball only until it passes halfway down the screen; after that, watch the paddle and move it in one smooth motion to the meeting point instead of chasing the ball's shadow. Both games reward short, frequent sessions: ten focused minutes a day builds the timing far faster than one long frustrated session, because your last, tired attempts are the ones that teach your hands the wrong rhythm.</p></article>
+      <article class="guide"><h3>Why short puzzle sessions feel so satisfying</h3><div class="gmeta"><span class="tag">Puzzle</span><span class="tag">Brain games</span></div>
+        <p>Memory Match, 2048 and Minesweeper share a design that makes them unusually good break-time games: the goal is obvious in five seconds, a full round finishes in minutes, and the difficulty comes from your own decisions rather than from timers or luck alone. Memory Match exercises recall of positions you saw only briefly; Minesweeper is pure deduction where every safe square is earned by logic; 2048 asks you to plan several moves ahead and live with the consequences of each slide. None of that makes these games medicine — they are entertainment first — but it does explain why a ten-minute puzzle break can feel more refreshing than ten minutes of scrolling: the game asks for your full attention, gives you a clear result, and then lets you stop.</p></article>
+    </div>
+  </section>
+
+  <!-- GAME DETAILS & SUPPORT -->
+  <section id="details" class="section">
+    <h2>Game Details, Accessibility &amp; Support</h2>
+    <p class="lead">The practical facts about how these games run, so there are no surprises before you play.</p>
+    <div class="two" style="margin-top:16px">
+      <div class="box"><h3>Supported browsers &amp; devices</h3><p class="prose">All seven games run in current versions of <b>Chrome, Edge, Firefox and Safari</b> on Windows, Mac, Linux, Android and iOS. They are built with HTML5 Canvas and standard JavaScript — no plugins, no downloads, no accounts. If a game does not start, updating your browser almost always fixes it.</p></div>
+      <div class="box"><h3>Accessibility</h3><p class="prose">Snake and 2048 are fully playable by <b>keyboard alone</b> (arrow keys or WASD), and every game can be operated with a mouse or touch. On-screen direction buttons are provided for Snake and 2048 on touch devices. Scores and status messages are shown as text on the game screen. The games currently have <b>no sound</b>, so they can be played in quiet places without missing anything.</p></div>
+    </div>
+    <div class="two" style="margin-top:14px">
+      <div class="box"><h3>Scores &amp; saving</h3><p class="prose">Scores exist only on the game screen while you play. <b>Nothing is stored</b> — this page does not save scores, use accounts, or keep a leaderboard, and closing the tab clears the current game. Minesweeper guarantees your first click is always safe; Memory Match shuffles its eight pairs fresh every game.</p></div>
+      <div class="box"><h3>Known limitations &amp; updates</h3><p class="prose">Version 1.0, published November 2026: seven games — Snake, 2048, Memory Match, Breakout, Flappy Jump, Tic Tac Toe and Minesweeper — each with a written guide on this page. Known limitations: only one game runs in the player at a time; switching games ends the current run; Breakout is easiest with a mouse or touch drag. Found a bug? Report it through the <a href="#contact" style="color:var(--blue);font-weight:700;text-decoration:underline">Contact section</a> with the game name, your device and your browser, and it will be checked for the next update.</p></div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section id="categories" class="section">
+    <h2>Game Categories</h2>
+    <p class="lead">Pick a style you enjoy. Short arcade games are best for quick breaks, while puzzle and brain games reward patience and planning.</p>
+    <div class="catgrid">
+      <div class="cat" style="background:#ff4d1c"><h3>Arcade</h3><p>Fast reflex games — Snake, Breakout and Flappy Jump. Easy to learn, hard to master.</p></div>
+      <div class="cat" style="background:#1366ff"><h3>Puzzle</h3><p>Number and logic challenges like 2048 and Minesweeper that make you think ahead.</p></div>
+      <div class="cat" style="background:#00a896"><h3>Brain & Memory</h3><p>Memory Match trains focus and recall with a simple flip-and-match mechanic.</p></div>
+      <div class="cat" style="background:#111827"><h3>Classic Board</h3><p>Timeless two-player style games like Tic Tac Toe — play against the computer or a friend.</p></div>
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section id="how" class="section">
+    <h2>How to Play</h2>
+    <div class="two" style="margin-top:16px">
+      <div class="box"><h3>On Desktop</h3><p class="prose">Click any <b>Play Now</b> button. The game loads in the player above the list. Most games use <b>arrow keys, WASD, Space, or your mouse</b>. The exact controls are written under the player for every game. Use Restart to start a fresh round and Pause where available.</p></div>
+      <div class="box"><h3>On Mobile</h3><p class="prose">Tap a game, then use <b>touch, swipe, or the on-screen buttons</b>. Snake and Flappy include mobile controls, Breakout follows your finger, and tap-based games like Memory Match and Tic Tac Toe work with a single tap. No app install is needed.</p></div>
+    </div>
+    <div class="two" style="margin-top:14px">
+      <div class="box"><h3>Why HTML5 Games?</h3><p class="prose">HTML5 games run directly in a modern browser using Canvas and JavaScript. That means <b>no Flash, no plugins, no downloads</b>, and the same game works on Windows, Mac, Android and iPhone. They also load fast on slow connections because everything is lightweight.</p></div>
+      <div class="box"><h3>Tips to Score Higher</h3><p class="prose">In <b>Snake</b>, stay near the centre early and avoid trapping yourself. In <b>2048</b>, keep your biggest tile in one corner. In <b>Memory Match</b>, flip cards in a pattern instead of randomly. In <b>Breakout</b>, aim for the edges to create sharper rebound angles.</p></div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="section">
+    <h2>Frequently Asked Questions</h2>
+    <div style="margin-top:16px">
+      <details open><summary>Are these games really free?</summary><p>Yes. Every game on this page is free to play in your browser. There is no sign-up, no download and no in-game payment required to start playing.</p></details>
+      <details><summary>Do I need to install anything?</summary><p>No. These are HTML5 games, so they run inside Chrome, Edge, Firefox, Safari and other modern browsers. Just open a game and press Play.</p></details>
+      <details><summary>Can I play on my phone?</summary><p>Yes. The site and games are responsive. Tap-based games work with touch, Snake includes on-screen direction buttons, and Breakout and Flappy respond to taps and swipes.</p></details>
+      <details><summary>Why did my game stop when I switched games?</summary><p>Only one game runs in the player at a time to keep the page fast. When you open another game, the previous game stops. Press Restart in the new game to begin.</p></details>
+      <details><summary>Which game is best for a quick 2-minute break?</summary><p>Flappy Jump, Snake and Tic Tac Toe are the fastest to start. If you want a longer session, try 2048, Minesweeper or Breakout.</p></details>
+      <details><summary>Do you collect my personal data?</summary><p>This static games page does not require an account and does not ask for personal information to play. If advertising is enabled, ad partners may use cookies as described in the Privacy Policy below.</p></details>
+      <details><summary>Are the games safe for children?</summary><p>Yes. The games contain no chat, no purchases, no gambling and no user-generated content, and they ask for no personal information. Advertising, when enabled, follows Google's policies; parents can manage personalised ads through Google Ads Settings, as explained in the Privacy Policy.</p></details>
+      <details><summary>Why do I see ads, and can I turn off personalised ads?</summary><p>Advertising keeps the games free. You can opt out of personalised advertising at any time via Google Ads Settings (www.google.com/settings/ads) or www.aboutads.info — you will still see ads, but they will not be based on your browsing history.</p></details>
+      <details><summary>A game is not working. What should I do?</summary><p>First refresh the page and make sure your browser is up to date — all seven games run in current Chrome, Edge, Firefox and Safari. If it still fails, send the game name, your device and your browser through the Contact section and it will be investigated.</p></details>
+      <details><summary>Can I suggest a new game or report a wrong tip in a guide?</summary><p>Yes — suggestions and corrections are welcome through the Contact section. The guides on this page are original to this site and are corrected whenever a game's rules or controls change.</p></details>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section">
+    <h2>About This Site</h2>
+    <div class="prose" style="margin-top:10px;max-width:900px">
+      <p><b>HTML5 Games</b> is a free browser-games collection built for quick, casual play. Instead of sending you to downloads or app stores, every title here runs instantly on the page — a design that works well for students on a break, office users with five spare minutes, and families looking for simple games on a shared tablet.</p>
+      <p>The collection focuses on proven, easy-to-understand formats: the classic <b>Snake</b> formula, the number-merging puzzle <b>2048</b>, the concentration game <b>Memory Match</b>, the paddle-and-bricks challenge of <b>Breakout</b>, the one-tap timing of <b>Flappy Jump</b>, the deduction of <b>Minesweeper</b>, and the evergreen <b>Tic Tac Toe</b>. Each game includes its own controls explanation in the player, a visible score, and a restart option so you can immediately try to beat your last result.</p>
+      <p>Every game here is written by hand in plain HTML, CSS and JavaScript — no game engine, no copied code packs, and no embedded third-party players. That keeps each game small (the whole page loads in about a second on a typical connection), makes the controls identical on every device, and means a game you learn today plays exactly the same next month. The written guides on this page are original to this site and are updated whenever a game's rules or controls change.</p>
+      <p>HTML5 Games is family-friendly: there is no chat, no account system, no gambling or cash prizes, and nothing to buy inside any game. Scores exist purely for your own satisfaction. If you are a teacher or parent, the puzzle and memory games are a safe pick for short brain breaks — they need no personal information from the player at all.</p>
+      <p>New categories and games can be added over time while keeping the same promise: fast loading, clear controls, and honest, playable games — not screenshots or links to elsewhere.</p>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
+      <a class="btn btn-outline" href="#privacy">Privacy Policy</a>
+      <a class="btn btn-outline" href="#terms">Terms of Use</a>
+      <a class="btn btn-outline" href="#copyright">Copyright</a>
+      <a class="btn btn-outline" href="#contact">Contact</a>
+    </div>
+  </section>
+
+  <!-- PRIVACY -->
+  <section id="privacy" class="section">
+    <h2>Privacy Policy</h2>
+    <p class="updated">Last updated: 9 November 2026</p>
+    <div class="policy" style="margin-top:14px">
+      <p>This Privacy Policy explains what information HTML5 Games ("we", "this site") collects when you play the free browser games on this page, how it is used, and the choices you have. By using this site you agree to this policy.</p>
+      <h3>Information we collect</h3>
+      <p>This site has no accounts, no sign-up forms and no payment processing. We do not ask for your name, password, address or payment details in order to play. Game scores are shown on your screen during play only and are not sent to us. If you email us through the Contact section, we receive the email address and message you choose to send, and we use them only to reply to you.</p>
+      <h3>Cookies and advertising</h3>
+      <p>This site is supported by advertising provided by Google AdSense. In connection with those ads:</p>
+      <ul>
+        <li>Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to this website or other websites.</li>
+        <li>Google's use of advertising cookies enables it and its partners to serve ads to users based on their visit to this site and/or other sites on the Internet.</li>
+        <li>Users may opt out of personalised advertising by visiting <a href="https://www.google.com/settings/ads" rel="noopener" target="_blank">Google Ads Settings</a>. Alternatively, users can opt out of some third-party vendors' use of cookies for personalised advertising by visiting <a href="https://www.aboutads.info/choices/" rel="noopener" target="_blank">www.aboutads.info</a>.</li>
+        <li>Third-party ad servers or ad networks may use technologies such as cookies, JavaScript or web beacons in their advertisements, and may receive your IP address when this happens. This site has no control over cookies used by third-party advertisers; please consult the respective privacy policies of those ad servers for more detail.</li>
+        <li>If third-party ad serving has not been opted out of, the cookies of other third-party vendors or ad networks may also be used to serve ads on this site.</li>
+      </ul>
+      <p>Third parties may be placing and reading cookies on your browser, or using web beacons to collect information, as a result of ad serving on this website. For more detail on how Google uses information from sites that use its services, see <a href="https://policies.google.com/technologies/partner-sites" rel="noopener" target="_blank">How Google uses information from sites or apps that use our services</a>.</p>
+      <h3>Data collection, sharing and use by Google products</h3>
+      <p>When advertising or other Google services are active on this site, Google and its partners may collect, share and use data — including cookies, web beacons, IP addresses, device identifiers and other identifiers, device-specific information and location information — as described in Google's own policies linked above. This data is used to serve and measure ads, including personalised ads where you have not opted out, and to prevent fraud and abuse. You can manage cookies at any time in your browser settings (blocking or deleting cookies may affect how ads and some site features work), and you can opt out of personalised advertising at <a href="https://www.google.com/settings/ads" rel="noopener" target="_blank">Google Ads Settings</a> or <a href="https://www.aboutads.info/choices/" rel="noopener" target="_blank">www.aboutads.info</a>.</p>
+      <h3>Visitors in the EEA, UK and Switzerland</h3>
+      <p>Where consent is required for personalised advertising (for example in the European Economic Area, the United Kingdom and Switzerland), a consent message provided through a Google-certified consent management platform will be shown so you can accept or reject personalised ads before they are served. If you reject, you may still see non-personalised ads.</p>
+      <h3>What this site itself stores</h3>
+      <p>The games keep your score on screen in your browser's memory only. This site does not use accounts, does not run its own analytics database, and does not store your gameplay on any server. The only personal information we ever hold is an email you choose to send us, as described above.</p>
+      <h3>Log files</h3>
+      <p>Like most websites, hosting providers may record standard log information (IP address, browser type, Internet Service Provider, date and time, and pages visited) for security and traffic analysis. This information is not linked to anything personally identifiable on this site.</p>
+      <h3>Children's privacy</h3>
+      <p>The games on this site are suitable for general audiences. We do not knowingly collect personal information from children under 13. If you believe a child has provided us personal information (for example by email), contact us and we will delete it promptly.</p>
+      <h3>Your rights</h3>
+      <p>Depending on where you live (for example under the GDPR or CCPA), you may have the right to ask what personal data we hold about you, and to ask for its correction or deletion. Because we hold almost none — only emails you send us — such requests are simple: write to us from the Contact section and we will act on them.</p>
+      <h3>Changes to this policy</h3>
+      <p>We may update this Privacy Policy as the site grows. The "Last updated" date at the top of this section will change when we do, and the current version always applies.</p>
+      <h3>Consent</h3>
+      <p>By using this website, you consent to this Privacy Policy and agree to its terms.</p>
+    </div>
+  </section>
+
+  <!-- TERMS -->
+  <section id="terms" class="section">
+    <h2>Terms of Use</h2>
+    <p class="updated">Last updated: 9 November 2026</p>
+    <div class="policy" style="margin-top:14px">
+      <p>By playing the games or reading the content on HTML5 Games, you agree to these Terms of Use.</p>
+      <h3>The service</h3>
+      <p>All games and guides on this site are provided free of charge for personal, non-commercial entertainment. No registration is required. The site is provided "as is" and "as available"; we may add, change or remove games and content at any time without notice.</p>
+      <h3>Acceptable use</h3>
+      <ul>
+        <li>Do not attempt to disrupt, overload, scrape abusively, or gain unauthorised access to this site or its hosting.</li>
+        <li>Do not misrepresent scores or content from this site as official records; in-game scores are for fun and carry no cash value, prizes or ranking.</li>
+        <li>Do not copy the site's written content (guides, FAQs, policies) for deceptive or spam purposes. Short quotations with a link back are welcome.</li>
+      </ul>
+      <h3>Intellectual property</h3>
+      <p>The game implementations, text and design on this page are the property of this site unless stated otherwise. The classic game concepts themselves (such as Snake or Tic Tac Toe) belong to the public history of games; our code and writing are original.</p>
+      <h3>Advertising and external links</h3>
+      <p>This site displays advertising served by third parties such as Google. We are not responsible for the content of advertisements or of external websites linked from this page (including advertiser sites and the opt-out pages named in the Privacy Policy).</p>
+      <h3>Limitation of liability</h3>
+      <p>To the maximum extent permitted by law, we are not liable for any loss or damage arising from use of, or inability to use, this site or its games.</p>
+    </div>
+  </section>
+
+  <!-- COPYRIGHT -->
+  <section id="copyright" class="section">
+    <h2>Copyright &amp; Content Rights</h2>
+    <div class="policy" style="margin-top:14px">
+      <p>Every game on this page was written for this site in original HTML, CSS and JavaScript code, and all written content — game guides, strategy articles, FAQs and these policy pages — is original writing created for HTML5 Games. The underlying game concepts (such as Snake, Tic Tac Toe and Minesweeper) are long-established classics in the public history of games; no copyrighted artwork, music, characters or code from other games or websites is used, copied or embedded here, and there are no ROMs, downloads or pirated assets on this site.</p>
+      <p>If you believe that any content on this page infringes your copyright, please email us through the <a href="#contact">Contact section</a> with (1) your name, (2) a description of the copyrighted work, (3) the exact content on this page you believe infringes it, and (4) a statement that you are the rights holder or are authorised to act for them. Valid reports are reviewed promptly and infringing material, if any is found, will be removed.</p>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section">
+    <h2>Contact Us</h2>
+    <p class="lead">Questions about a game, a bug report, feedback on a guide, or a privacy request — email is the fastest way to reach the site owner.</p>
+    <div class="policy" style="margin-top:14px">
+      <p><b style="color:var(--ink)">Email:</b> <a href="mailto:ub7214715@gmail.com">ub7214715@gmail.com</a></p>
+      <p>Please include the game name and your device and browser (for example "Breakout — Android, Chrome") so any problem can be reproduced. We aim to reply within a few days. You can also write your message below and press the button — it opens your own email app with the message addressed and ready to send; nothing is sent until you press send there.</p>
+      <div class="cform">
+        <label>Your name<input id="cfName" type="text" autocomplete="name" placeholder="Your name"/></label>
+        <label>Topic<input id="cfTopic" type="text" placeholder="e.g. Bug in Snake / Privacy question"/></label>
+        <label>Message<textarea id="cfMsg" rows="5" placeholder="Write your message…"></textarea></label>
+        <button class="btn btn-orange" id="cfSend" type="button" style="justify-self:start">✉️ Send via Email</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap foot">
+  <div><b style="color:var(--ink)">HTML5 Games</b><br>Free browser games. No download, no sign-up.<br>Play Snake, 2048, Memory Match, Breakout and more.</div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;font-weight:700"><a href="#games">Games</a><a href="#guides">Guides</a><a href="#articles">Articles</a><a href="#categories">Categories</a><a href="#faq">FAQ</a><a href="#about">About</a><a href="#privacy">Privacy Policy</a><a href="#terms">Terms of Use</a><a href="#copyright">Copyright</a><a href="#contact">Contact</a></div>
+  <div>© 2026 HTML5 Games. For entertainment purposes.</div>
+</div></footer>
+
+<script>
+document.getElementById('cfSend').addEventListener('click',()=>{
+ const n=document.getElementById('cfName').value.trim(), t=document.getElementById('cfTopic').value.trim(), m=document.getElementById('cfMsg').value.trim();
+ const subject=encodeURIComponent(t?('HTML5 Games — '+t):'HTML5 Games — Contact');
+ const body=encodeURIComponent((m||'')+(n?('\n\n— '+n):''));
+ window.location.href='mailto:ub7214715@gmail.com?subject='+subject+'&body='+body;
+});
+</script>
+<script>
+const GAMES=[
+ {id:'snake',title:'Snake',cat:'arcade',catLabel:'Arcade',color:'#6ac100',icon:'🐍',diff:'Easy',time:'2–5 min',desc:'Eat food, grow longer and survive as long as you can in the timeless arcade classic.',help:'Arrow keys / WASD / swipe buttons. Eat the red food. Avoid walls and your own tail.'},
+ {id:'g2048',title:'2048',cat:'puzzle',catLabel:'Puzzle',color:'#1366ff',icon:'🔢',diff:'Hard',time:'5–15 min',desc:'Slide numbered tiles, merge matching numbers and try to reach the legendary 2048 tile.',help:'Arrow keys or WASD to slide tiles. Merge equal numbers. Game ends when no moves remain.'},
+ {id:'memory',title:'Memory Match',cat:'brain',catLabel:'Brain',color:'#00a896',icon:'🧠',diff:'Medium',time:'2–4 min',desc:'Flip cards and find all 8 matching pairs in as few moves as you can.',help:'Tap a card to flip it. Match all 8 pairs. Fewer moves and faster time is better.'},
+ {id:'breakout',title:'Breakout',cat:'arcade',catLabel:'Arcade',color:'#ff4d1c',icon:'🧱',diff:'Medium',time:'3–6 min',desc:'Move the paddle, bounce the ball and smash every brick. Don\'t let the ball fall.',help:'Mouse, finger drag, or ← → keys move the paddle. Clear all bricks to win. You have 3 lives.'},
+ {id:'flappy',title:'Flappy Jump',cat:'arcade',catLabel:'Arcade',color:'#ffb800',icon:'🐦',diff:'Hard',time:'1–3 min',desc:'Tap to flap through the gaps. One tap too late and it\'s game over — how far can you go?',help:'Click, tap, or press Space to flap. Pass through pipe gaps to score.'},
+ {id:'ttt',title:'Tic Tac Toe',cat:'classic',catLabel:'Classic',color:'#111827',icon:'❌',diff:'Easy',time:'1–2 min',desc:'Play X against the computer. Get three in a row before the computer blocks you.',help:'You are X. Tap any empty square. First to make 3 in a row wins.'},
+ {id:'mine',title:'Minesweeper',cat:'puzzle',catLabel:'Puzzle',color:'#ff2e7e',icon:'💣',diff:'Hard',time:'5–10 min',desc:'Reveal safe squares and deduce where the 10 hidden mines are hiding.',help:'Click/tap to reveal — your first tap is always safe. Numbers show nearby mines. Use the Flag Mode button below the board to flag suspected mines. Avoid all 10 mines.'},
+];
+const grid=document.getElementById('gameGrid');
+function renderGrid(){
+ grid.innerHTML=GAMES.map(g=>`<article class="card" data-title="${g.title.toLowerCase()}" data-search="${(g.title+' '+g.catLabel+' '+g.cat+' '+g.desc).toLowerCase()}" data-cat="${g.cat}">
+  <div class="thumb" style="background:${g.color}"><span class="big">${g.icon}</span><b>${g.catLabel.toUpperCase()}</b></div>
+  <div class="card-body"><h3>${g.title}</h3><p>${g.desc}</p>
+  <div class="meta"><span class="tag">${g.diff}</span><span class="tag">${g.time}</span><span class="tag">Free • No Download</span></div>
+  <button class="btn btn-orange play" onclick="openGame('${g.id}')">▶ Play Now</button></div></article>`).join('');
+}
+renderGrid();
+
+let cleanup=null, paused=false, currentId='snake';
+const stage=document.getElementById('stage');
+document.getElementById('pills').addEventListener('click',e=>{
+ if(!e.target.matches('.pill'))return;
+ document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active')); e.target.classList.add('active');
+ filterGames();
+});
+document.getElementById('search').addEventListener('input',filterGames);
+function filterGames(){
+ const q=document.getElementById('search').value.trim().toLowerCase();
+ const f=document.querySelector('.pill.active').dataset.f; let vis=0;
+ document.querySelectorAll('.card').forEach(c=>{
+   const ok=(f==='all'||c.dataset.cat===f)&&(!q||c.dataset.search.includes(q));
+   c.style.display=ok?'':'none'; if(ok)vis++;
+ });
+ document.getElementById('noResult').style.display=vis?'none':'block';
+}
+document.getElementById('restartBtn').addEventListener('click',()=>openGame(currentId,true));
+document.getElementById('pauseBtn').addEventListener('click',function(){paused=!paused;this.textContent=paused?'▶ Resume':'⏸ Pause';});
+
+function setStage(html){ if(cleanup){try{cleanup()}catch(e){} cleanup=null;} paused=false; document.getElementById('pauseBtn').textContent='⏸ Pause'; stage.innerHTML=html; }
+function hud(items){return `<div class="hud">${items.map(i=>`<span>${i}</span>`).join('')}</div>`}
+function openGame(id,stay){
+ const g=GAMES.find(x=>x.id===id); if(!g)return; currentId=id;
+ document.getElementById('playerTitle').textContent='Game Player — '+g.title;
+ document.getElementById('playerDesc').textContent=g.help;
+ document.getElementById('nowPlaying').textContent='Now Playing: '+g.title;
+ if(!stay) document.getElementById('player').scrollIntoView({behavior:'smooth'});
+ ({snake:initSnake,memory:initMemory,g2048:init2048,breakout:initBreakout,flappy:initFlappy,ttt:initTTT,mine:initMine})[id]();
+}
+
+/* SNAKE */
+function initSnake(){
+ setStage(`${hud(['Score: <b id="sScore">0</b>','Best: <b id="sBest">0</b>','Speed: Normal'])}<canvas id="cv" width="400" height="400"></canvas><p class="help">Press Start, then steer with arrow keys / WASD.</p><button class="pbtn primary" id="sStart">▶ Start Game</button><div class="touch"><button data-d="left">←</button><button data-d="up">↑</button><button data-d="down">↓</button><button data-d="right">→</button></div>`);
+ const ctx=stage.querySelector('#cv').getContext('2d'), N=20, S=20;
+ let snake,dir,queue,food,score=0,best=0,timer=null,alive=false,running=false;
+ function place(){ // food never lands on the snake's body
+  const free=[]; for(let x=0;x<N;x++)for(let y=0;y<N;y++) if(!snake.some(p=>p.x===x&&p.y===y)) free.push({x,y});
+  food=free[Math.floor(Math.random()*free.length)];
+ }
+ function turn(d){ // queue turns, but never allow a 180° reversal into your own neck
+  const last=queue.length?queue[queue.length-1]:dir;
+  if(!last||(d.x!==-last.x||d.y!==-last.y)&&(d.x!==last.x||d.y!==last.y)&&queue.length<3) queue.push(d);
+ }
+ function draw(){ctx.fillStyle='#0f172a';ctx.fillRect(0,0,400,400);ctx.fillStyle='#ef4444';ctx.fillRect(food.x*S+2,food.y*S+2,16,16);snake.forEach((p,i)=>{ctx.fillStyle=i?'#22c55e':'#bbf7d0';ctx.fillRect(p.x*S+1,p.y*S+1,18,18)});}
+ function reset(){snake=[{x:9,y:10},{x:8,y:10},{x:7,y:10}];dir={x:1,y:0};queue=[];score=0;alive=true;place();stage.querySelector('#sScore').textContent=0;draw();}
+ function step(){ if(paused||!alive)return; if(queue.length)dir=queue.shift(); const h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+  const willEat=h.x===food.x&&h.y===food.y;
+  const body=willEat?snake:snake.slice(0,-1); // the tail cell you are leaving is not a collision
+  if(h.x<0||h.y<0||h.x>=N||h.y>=N||body.some(p=>p.x===h.x&&p.y===h.y)){alive=false;running=false;best=Math.max(best,score);stage.querySelector('#sBest').textContent=best;alertInStage('Game Over! Score: '+score+' — press Start to play again.');clearInterval(timer);timer=null;return;}
+  snake.unshift(h); if(willEat){score+=10;stage.querySelector('#sScore').textContent=score;place();}else snake.pop(); draw();}
+ function start(){reset();clearInterval(timer);timer=setInterval(step,130);running=true;}
+ const DIRS={arrowup:{x:0,y:-1},w:{x:0,y:-1},arrowdown:{x:0,y:1},s:{x:0,y:1},arrowleft:{x:-1,y:0},a:{x:-1,y:0},arrowright:{x:1,y:0},d:{x:1,y:0}};
+ const kd=e=>{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)||e.target.isContentEditable)return; const k=e.key.toLowerCase(); if(DIRS[k]){if(!running)start(); turn(DIRS[k]); e.preventDefault();} if(k===' ')e.preventDefault();};
+ document.addEventListener('keydown',kd);
+ stage.querySelector('#sStart').onclick=start;
+ stage.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const d=b.dataset.d; if(!running)start(); turn(d==='up'?{x:0,y:-1}:d==='down'?{x:0,y:1}:d==='left'?{x:-1,y:0}:{x:1,y:0});});
+ reset(); cleanup=()=>{clearInterval(timer);document.removeEventListener('keydown',kd);};
+}
+function alertInStage(msg){const p=document.createElement('p');p.className='help';p.style.color='#fca5a5';p.style.fontWeight='900';p.textContent=msg;stage.appendChild(p);}
+
+/* MEMORY */
+function initMemory(){
+ const em=['🍎','🍌','🍇','🍓','🍊','🍉','🥝','🍒']; let cards=[...em,...em].sort(()=>Math.random()-.5),done=0,moves=0,lock=false,first=null,flipTimer=null;
+ setStage(`${hud(['Moves: <b id="mMoves">0</b>','Pairs: <b id="mPairs">0</b> / 8'])}<div class="mem">${cards.map((c,i)=>`<button data-i="${i}">?</button>`).join('')}</div><p class="help">Find all 8 pairs.</p>`);
+ stage.querySelectorAll('.mem button').forEach(btn=>btn.onclick=()=>{
+  if(paused||lock||btn.classList.contains('open')||btn.classList.contains('done'))return;
+  const i=+btn.dataset.i; btn.textContent=cards[i]; btn.classList.add('open');
+  if(first===null){first={i,btn};return;}
+  moves++; stage.querySelector('#mMoves').textContent=moves;
+  if(cards[first.i]===cards[i]){first.btn.classList.add('done');btn.classList.add('done');done++;stage.querySelector('#mPairs').textContent=done;first=null;if(done===8)alertInStage('🎉 You win in '+moves+' moves! Press Restart to play again.');}
+  else{lock=true;const f=first;first=null;flipTimer=setTimeout(()=>{f.btn.textContent='?';btn.textContent='?';f.btn.classList.remove('open');btn.classList.remove('open');lock=false;flipTimer=null;},650);}
+ }); cleanup=()=>{if(flipTimer)clearTimeout(flipTimer);};
+}
+
+/* 2048 */
+function init2048(){
+ let b=Array(16).fill(0),score=0,over=false,won=false;
+ setStage(`${hud(['Score: <b id="gScore">0</b>'])}<div class="g2048" id="gBoard"></div><p class="help">Use arrow keys / WASD. On mobile, use the buttons below.</p><div class="touch always"><button data-m="left">←</button><button data-m="up">↑</button><button data-m="down">↓</button><button data-m="right">→</button></div>`);
+ const board=stage.querySelector('#gBoard');
+ const colors={0:'#334155',2:'#fef3c7',4:'#fde68a',8:'#f59e0b',16:'#f97316',32:'#ef4444',64:'#dc2626',128:'#facc15',256:'#eab308',512:'#22c55e',1024:'#0ea5e9',2048:'#ff4d1c'};
+ function add(){const e=b.map((v,i)=>v?null:i).filter(v=>v!==null); if(e.length)b[e[Math.floor(Math.random()*e.length)]]=Math.random()<.9?2:4;}
+ function draw(){board.innerHTML=b.map(v=>`<div style="background:${colors[v]||'#7c3aed'};color:${v<=4&&v?'#0f172a':'#fff'}">${v||''}</div>`).join(''); stage.querySelector('#gScore').textContent=score;}
+ function slide(row){row=row.filter(Boolean); for(let i=0;i<row.length-1;i++){if(row[i]===row[i+1]){row[i]*=2;score+=row[i];row.splice(i+1,1);}} return [...row,...Array(4-row.length).fill(0)];}
+ function move(dir){ if(over||paused)return; const old=b.join(','); let nb=Array(16).fill(0);
+  const idx=(i,j)=>dir==='left'?i*4+j:dir==='right'?i*4+(3-j):dir==='up'?j*4+i:(3-j)*4+i;
+  for(let i=0;i<4;i++){const line=[0,1,2,3].map(j=>b[idx(i,j)]); const s=slide(line); for(let j=0;j<4;j++)nb[idx(i,j)]=s[j];}
+  b=nb; if(b.join(',')!==old){add();draw();
+   if(!won&&b.includes(2048)){won=true;alertInStage('🎉 You made the 2048 tile! Keep going for a higher score, or press Restart.');}
+   if(!can()){over=true;alertInStage('Game Over! Final score: '+score);}}}
+ function can(){if(b.includes(0))return true; for(let i=0;i<4;i++)for(let j=0;j<4;j++){const v=b[i*4+j]; if(j<3&&b[i*4+j+1]===v)return true; if(i<3&&b[(i+1)*4+j]===v)return true;} return false;}
+ const kd=e=>{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)||e.target.isContentEditable)return; const k=e.key.toLowerCase(); const m={arrowleft:'left',a:'left',arrowright:'right',d:'right',arrowup:'up',w:'up',arrowdown:'down',s:'down'}[k]; if(m){e.preventDefault();move(m);}};
+ document.addEventListener('keydown',kd);
+ stage.querySelectorAll('[data-m]').forEach(x=>x.onclick=()=>move(x.dataset.m));
+ add();add();draw(); cleanup=()=>document.removeEventListener('keydown',kd);
+}
+
+/* BREAKOUT */
+function initBreakout(){
+ setStage(`${hud(['Score: <b id="bScore">0</b>','Lives: <b id="bLives">3</b>'])}<canvas id="bcv" width="480" height="360"></canvas><p class="help">Move mouse / finger / ← → keys. Click canvas to launch the ball.</p>`);
+ const cv=stage.querySelector('#bcv'),ctx=cv.getContext('2d'); let px=190,bx=240,by=330,dx=3,dy=-3,score=0,lives=3,raf,started=false,over=false;
+ let bricks=[]; for(let r=0;r<5;r++)for(let c=0;c<8;c++)bricks.push({x:12+c*57,y:30+r*24,w:50,h:16,on:true,c:['#ef4444','#f59e0b','#22c55e','#3b82f6','#ec4899'][r]});
+ function draw(){ctx.fillStyle='#0f172a';ctx.fillRect(0,0,480,360); bricks.forEach(br=>{if(br.on){ctx.fillStyle=br.c;ctx.fillRect(br.x,br.y,br.w,br.h);}}); ctx.fillStyle='#fff';ctx.fillRect(px,340,100,12); ctx.beginPath();ctx.arc(bx,by,8,0,7);ctx.fill();
+  if(!paused&&started&&!over){bx+=dx;by+=dy; if(bx<8){bx=8;dx=Math.abs(dx);} if(bx>472){bx=472;dx=-Math.abs(dx);} if(by<8){by=8;dy=Math.abs(dy);}
+   if(dy>0&&by>=332&&by<=352&&bx>px-8&&bx<px+108){const rel=Math.max(-1,Math.min(1,(bx-(px+50))/50)); dx=4*rel; dy=-Math.sqrt(Math.max(4,25-dx*dx)); by=332;} // edge hits rebound at a sharper angle
+   for(const br of bricks){if(br.on&&bx+8>br.x&&bx-8<br.x+br.w&&by+8>br.y&&by-8<br.y+br.h){br.on=false;dy*=-1;score+=10;stage.querySelector('#bScore').textContent=score;break;}} // one brick per frame, so the ball can't tunnel through two
+   if(by>368){lives--;stage.querySelector('#bLives').textContent=lives; if(lives<=0){over=true;alertInStage('Game Over! Score: '+score+' — press Restart to play again.');} else {bx=px+50;by=330;dx=3;dy=-3;started=false;}}
+   else if(bricks.every(b=>!b.on)){over=true;alertInStage('🎉 You cleared all bricks! Score: '+score);}}
+  raf=requestAnimationFrame(draw);}
+ const mm=e=>{const r=cv.getBoundingClientRect(); const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left; px=Math.max(0,Math.min(380,x*(480/r.width)-50)); if(!started&&!over){bx=px+50;by=330;}};
+ cv.addEventListener('mousemove',mm); cv.addEventListener('touchmove',mm,{passive:true}); cv.addEventListener('click',()=>{if(!over)started=true;});
+ const kd=e=>{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)||e.target.isContentEditable)return; if(e.key==='ArrowLeft'){px=Math.max(0,px-24);e.preventDefault();} if(e.key==='ArrowRight'){px=Math.min(380,px+24);e.preventDefault();} if(e.key===' '){e.preventDefault(); if(!over)started=true;}};
+ document.addEventListener('keydown',kd); draw(); cleanup=()=>{cancelAnimationFrame(raf);document.removeEventListener('keydown',kd);};
+}
+
+/* FLAPPY */
+function initFlappy(){
+ setStage(`${hud(['Score: <b id="fScore">0</b>'])}<canvas id="fcv" width="400" height="480"></canvas><button class="pbtn primary" id="fStart">▶ Start / Flap</button><p class="help">Click the canvas, tap Start, or press Space.</p>`);
+ const cv=stage.querySelector('#fcv'),ctx=cv.getContext('2d'); let y=220,v=0,pipes=[],score=0,raf,run=false,frame=0;
+ function reset(){y=220;v=0;pipes=[];score=0;frame=0;run=true;stage.querySelector('#fScore').textContent=0;}
+ function loop(){ctx.fillStyle='#7dd3fc';ctx.fillRect(0,0,400,480);ctx.fillStyle='#22c55e';ctx.fillRect(0,440,400,40);
+  if(run&&!paused){v+=0.45;y+=v; if(y<16){y=16;v=0;} frame++; if(frame%95===0)pipes.push({x:400,top:60+Math.random()*220,passed:false});
+   pipes.forEach(p=>{p.x-=2.6; if(!p.passed&&p.x+52<110){p.passed=true;score++;stage.querySelector('#fScore').textContent=score;}});
+   pipes=pipes.filter(p=>p.x>-60);
+   // collision uses the bird's real radius (16px), not a single point — no more unfair deaths at the pipe edge
+   if(y>424||pipes.some(p=>110+16>p.x&&110-16<p.x+52&&(y-16<p.top||y+16>p.top+130))){run=false;alertInStage('Game Over! Score: '+score+' — tap Start / Flap to try again.');}}
+  ctx.fillStyle='#16a34a'; pipes.forEach(p=>{ctx.fillRect(p.x,0,52,p.top);ctx.fillRect(p.x,p.top+130,52,480);});
+  ctx.fillStyle='#facc15';ctx.beginPath();ctx.arc(110,y,16,0,7);ctx.fill();ctx.fillStyle='#0f172a';ctx.fillRect(118,y-3,4,4);
+  raf=requestAnimationFrame(loop);}
+ function flap(){if(!run)reset(); v=-7.5;}
+ cv.addEventListener('pointerdown',flap); stage.querySelector('#fStart').onclick=flap;
+ const kd=e=>{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)||e.target.isContentEditable)return; if(e.key===' '){e.preventDefault();flap();}}; document.addEventListener('keydown',kd);
+ loop(); cleanup=()=>{cancelAnimationFrame(raf);document.removeEventListener('keydown',kd);};
+}
+
+/* TIC TAC TOE */
+function initTTT(){
+ let board=Array(9).fill(''),turn='X',done=false;
+ setStage(`${hud(['You: X','Computer: O','Status: <b id="tStatus">Your move</b>'])}<div class="ttt">${board.map((_,i)=>`<button data-i="${i}"></button>`).join('')}</div>`);
+ const btns=[...stage.querySelectorAll('.ttt button')];
+ function win(b){const L=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; return L.find(l=>b[l[0]]&&b[l[0]]===b[l[1]]&&b[l[1]]===b[l[2]]);}
+ function end(msg){done=true;stage.querySelector('#tStatus').textContent=msg;alertInStage(msg+' — Press Restart for a new game.');}
+ function ai(){const empty=board.map((v,i)=>v?null:i).filter(v=>v!==null); if(!empty.length||done)return;
+  // win if possible, block if needed, else centre/random
+  let pick=null; for(const mark of ['O','X']){for(const i of empty){board[i]=mark; if(win(board)){pick=i;board[i]='';break;} board[i]='';} if(pick!==null)break;}
+  if(pick===null)pick=board[4]===''?4:empty[Math.floor(Math.random()*empty.length)];
+  board[pick]='O'; btns[pick].textContent='O';}
+ btns.forEach(b=>b.onclick=()=>{const i=+b.dataset.i; if(paused||done||board[i])return; board[i]='X';b.textContent='X';
+  if(win(board))return end('🎉 You win!'); if(board.every(Boolean))return end('Draw!');
+  ai(); if(win(board))return end('Computer wins!'); if(board.every(Boolean))return end('Draw!'); stage.querySelector('#tStatus').textContent='Your move';});
+ cleanup=()=>{};
+}
+
+/* MINESWEEPER */
+function initMine(){
+ const MINES=10; let mines=null,revealed=new Set(),flagMode=false,dead=false,wonGame=false;
+ setStage(`${hud(['Mines: 10','Revealed: <b id="mnR">0</b> / 71'])}<div class="mine">${Array.from({length:81},(_,i)=>`<button data-i="${i}"></button>`).join('')}</div><button class="pbtn" id="flagBtn">🚩 Flag Mode: OFF</button><p class="help">Tap to reveal — your first tap is always safe. Turn Flag Mode ON, then tap a square to flag a suspected mine.</p>`);
+ const btns=[...stage.querySelectorAll('.mine button')];
+ stage.querySelector('#flagBtn').onclick=function(){flagMode=!flagMode;this.textContent='🚩 Flag Mode: '+(flagMode?'ON':'OFF');this.classList.toggle('primary',flagMode);};
+ function neighbors(i){const x=i%9,y=Math.floor(i/9),out=[]; for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){if(!dx&&!dy)continue; const nx=x+dx,ny=y+dy; if(nx>=0&&nx<9&&ny>=0&&ny<9)out.push(ny*9+nx);} return out;}
+ function placeMines(safe){ // mines are placed on the first click, away from that square and its neighbours
+  mines=new Set(); const banned=new Set([safe,...neighbors(safe)]);
+  while(mines.size<MINES){const m=Math.floor(Math.random()*81); if(!banned.has(m))mines.add(m);}
+ }
+ function count(i){return neighbors(i).filter(n=>mines.has(n)).length;}
+ function reveal(i){if(revealed.has(i)||dead||wonGame)return; const b=btns[i]; if(b.textContent==='🚩')return; // flags are respected, including during flood-fill
+  revealed.add(i); b.classList.add('open');
+  if(mines.has(i)){b.textContent='💣';dead=true;alertInStage('💥 Boom! You hit a mine. Press Restart to try again.'); mines.forEach(m=>{if(btns[m].textContent!=='🚩')btns[m].textContent='💣';}); return;}
+  const c=count(i); b.textContent=c||''; stage.querySelector('#mnR').textContent=revealed.size;
+  if(c===0)neighbors(i).forEach(reveal);
+  if(revealed.size===71){wonGame=true;alertInStage('🎉 You cleared the board! You win!');}}
+ btns.forEach(b=>b.onclick=()=>{const i=+b.dataset.i; if(paused||dead||wonGame)return; if(flagMode){if(!revealed.has(i))b.textContent=b.textContent==='🚩'?'':'🚩';return;} if(b.textContent==='🚩')return; if(!mines)placeMines(i); reveal(i);});
+ cleanup=()=>{};
+}
+
+openGame('snake',true);
+</script>
+</body>
+</html>
