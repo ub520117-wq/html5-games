@@ -1151,3 +1151,26 @@ function engClicker(g){const c=g.cfg||{};let pts=0,per=c.per||1,cost=25,autos=0,
  upd();cleanup=()=>clearInterval(iv);}
 
 openGame('snake',true);
+/* --- App download bar (added 2026-11-26) --- */
+(function(){try{
+  function addBar(){
+    if(document.getElementById('appDlBar'))return;
+    var bar=document.createElement('div');
+    bar.id='appDlBar';
+    bar.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#111827;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;padding:9px 12px;font-family:system-ui,sans-serif;font-size:14px;box-shadow:0 -2px 10px rgba(0,0,0,.25)';
+    var txt=document.createElement('span');
+    txt.textContent='\uD83D\uDCF1 Get the App \u2014 All 500 Games, Works Without WiFi';
+    var a=document.createElement('a');
+    a.href='https://github.com/ub520117-wq/html5-games/releases/download/v1.0/html5-games.apk';
+    a.textContent='Download';
+    a.style.cssText='background:#22c55e;color:#fff;font-weight:700;padding:6px 14px;border-radius:999px;text-decoration:none;white-space:nowrap';
+    var x=document.createElement('button');
+    x.textContent='\u00D7';
+    x.setAttribute('aria-label','Close');
+    x.style.cssText='background:transparent;border:0;color:#fff;font-size:20px;line-height:1;cursor:pointer;padding:2px 6px';
+    x.onclick=function(){bar.remove();};
+    bar.appendChild(txt);bar.appendChild(a);bar.appendChild(x);
+    document.body.appendChild(bar);
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',addBar);}else{addBar();}
+}catch(e){}})();
