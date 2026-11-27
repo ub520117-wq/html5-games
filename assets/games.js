@@ -107,6 +107,7 @@ const GAMES=[
  {id:'gemcrush',title:'Gem Crush',cat:'puzzle',catLabel:'Puzzle',color:'#9333ea',icon:'💠',diff:'Medium',time:'3–6 min',desc:'A 10×10 field of gems — chain the biggest colour groups you can find.',help:'Click a gem in a group of 2+ same-colour neighbours to crush the whole group.',eng:'pop',cfg:{n:10,colors:5}},
  {id:'stacktower',title:'Stack Tower',cat:'arcade',catLabel:'Arcade',color:'#b45309',icon:'🏗️',diff:'Medium',time:'2–4 min',desc:'Drop moving blocks onto the tower — overhangs get sliced off.',help:'Click Drop (or tap the canvas) when the moving block lines up. Misalignment shrinks the next block.',eng:'stack',cfg:{speed:3.2}},
  {id:'blockdrop',title:'Block Drop Pro',cat:'arcade',catLabel:'Arcade',color:'#7c2d12',icon:'🧱',diff:'Hard',time:'2–4 min',desc:'Stack Tower at double pace — precision or a very short tower.',help:'Click Drop when the fast block lines up. Overhangs are sliced away.',eng:'stack',cfg:{speed:5}},
+ {id:'mosquito-smash',title:'Mosquito Smash',cat:'arcade',catLabel:'Arcade',color:'#e11d48',icon:'🦟',diff:'Easy',time:'1–3 min',desc:'Mosquitoes are diving at a sleeping man — tap to squash them before they bite. Three bites and he wakes up furious!',help:'Tap or click each mosquito to squash it. Do not let them reach the sleeper — 3 bites ends the game.',eng:'mosquito'},
 ]
 GAMES.push(
 {"id": "xqcap1", "title": "World Capitals Quiz 1", "cat": "brain", "catLabel": "Brain", "color": "#0ea5e9", "icon": "🏛️", "diff": "Medium", "time": "3–5 min", "desc": "Ten capital-city questions, round 1. How many world capitals do you really know?", "help": "Pick the correct capital for each country. 10 questions per round.", "eng": "quiz", "cfg": {"q": [["Capital of Japan?", ["Reykjavik", "Cairo", "Tokyo", "Athens"], 2], ["Capital of Australia?", ["Warsaw", "Beijing", "Kampala", "Canberra"], 3], ["Capital of Canada?", ["Helsinki", "Cairo", "Ottawa", "Paris"], 2], ["Capital of Brazil?", ["Kuala Lumpur", "Bern", "Brasília", "Addis Ababa"], 2], ["Capital of Egypt?", ["Muscat", "Sofia", "Pretoria", "Cairo"], 3], ["Capital of France?", ["Muscat", "Paris", "Islamabad", "Astana"], 1], ["Capital of Germany?", ["Berlin", "Copenhagen", "Helsinki", "Naypyidaw"], 0], ["Capital of Italy?", ["Pretoria", "Rome", "Paris", "Dodoma"], 1], ["Capital of Spain?", ["Madrid", "Naypyidaw", "Brussels", "Stockholm"], 0], ["Capital of Portugal?", ["Budapest", "Hanoi", "Khartoum", "Lisbon"], 3]]}},
@@ -695,7 +696,134 @@ function initMine(){
 
 
 /* ===== GENERIC ENGINES for the extended catalogue ===== */
-function initGeneric(id){const g=GAMES.find(x=>x.id===id);if(!g)return;const E={target:engTarget,catch:engCatch,dodge:engDodge,race:engRace,shooter:engShooter,pong:engPong,jump:engJump,timing:engTiming,reaction:engReaction,quiz:engQuiz,simon:engSimon,memgrid:engMemgrid,anagram:engAnagram,hangman:engHangman,typing:engTyping,numguess:engNumguess,rps:engRPS,dice:engDice,hl:engHL,connect4:engConnect4,tttx:engTTTX,reversi:engReversi,lights:engLights,sliding:engSliding,hanoi:engHanoi,sudoku:engSudoku,flood:engFlood,maze:engMaze,snake2:engSnake2,flappy2:engFlappy2,breakout2:engBreakout2,tiles:engTiles,stroop:engStroop,reflex:engReflex,odd:engOdd,pop:engPop,stack:engStack,penalty:engPenalty,coin:engCoin,war:engWar,blackjack:engBlackjack,wordle:engWordle,seq:engSeq,clicker:engClicker}[g.eng];if(E)E(g);}
+/* MOSQUITO SMASH */
+function engMosquito(g){
+ setStage(`${hud(['TOTAL KILLS: <b id="mqKills">0</b>','Bites: <b id="mqBites">0</b> / 3','Best: <b id="mqBest">0</b>'])}<canvas id="mqcv" width="400" height="520" style="touch-action:none"></canvas><p class="help">Tap or click each mosquito to squash it before it reaches the sleeper. Three bites and he wakes up!</p>`);
+ const cv=stage.querySelector('#mqcv'),ctx=cv.getContext('2d');
+ const W=400,H=520,headX=86,headY=H-104;
+ let bugs=[],fx=[],kills=0,bites=0,best=0,state='start',raf=0,lastT=0,spawnIn=0,overAt=0,biteFlash=-9999,t=0;
+ try{best=+localStorage.getItem('mqBest')||0;}catch(e){}
+ stage.querySelector('#mqBest').textContent=best;
+ let AC=null;
+ function blip(f){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();const o=AC.createOscillator(),gn=AC.createGain();o.type='square';o.frequency.value=f;gn.gain.setValueAtTime(0.05,AC.currentTime);gn.gain.exponentialRampToValueAtTime(0.0001,AC.currentTime+0.09);o.connect(gn);gn.connect(AC.destination);o.start();o.stop(AC.currentTime+0.1);}catch(e){}}
+ function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+ function spawnInt(){return Math.max(350,1150-kills*22);}
+ function spawn(){
+  const r=Math.random();let x,y;
+  if(r<0.45){x=24+Math.random()*(W-48);y=-18;}
+  else if(r<0.72){x=-18;y=26+Math.random()*190;}
+  else{x=W+18;y=26+Math.random()*190;}
+  const onHead=Math.random()<0.55;
+  const tx=onHead?headX+(Math.random()*24-12):150+Math.random()*180;
+  const ty=onHead?headY+(Math.random()*16-8):headY+18+Math.random()*20;
+  bugs.push({x:x,y:y,tx:tx,ty:ty,sp:0.55+Math.min(1.6,kills*0.03)+Math.random()*0.35,ph:Math.random()*6.283,wob:12+Math.random()*18,age:0});
+ }
+ function reset(){bugs=[];fx=[];kills=0;bites=0;spawnIn=300;stage.querySelector('#mqKills').textContent='0';stage.querySelector('#mqBites').textContent='0';state='play';}
+ function drawBug(b){
+  const flap=Math.sin(b.age*0.9)*0.7;
+  ctx.save();ctx.translate(b.x,b.y);
+  ctx.rotate(Math.atan2(b.ty-b.y,b.tx-b.x)+Math.PI/2);
+  ctx.fillStyle='rgba(255,255,255,0.8)';
+  ctx.save();ctx.rotate(-0.7-flap*0.4);ctx.beginPath();ctx.ellipse(-9,-8,10,4.5,0,0,7);ctx.fill();ctx.restore();
+  ctx.save();ctx.rotate(0.7+flap*0.4);ctx.beginPath();ctx.ellipse(9,-8,10,4.5,0,0,7);ctx.fill();ctx.restore();
+  ctx.strokeStyle='#1f2937';ctx.lineWidth=1.6;
+  for(let i=-1;i<=1;i++){ctx.beginPath();ctx.moveTo(-4,2+i*5);ctx.lineTo(-11,7+i*6);ctx.stroke();ctx.beginPath();ctx.moveTo(4,2+i*5);ctx.lineTo(11,7+i*6);ctx.stroke();}
+  ctx.fillStyle='#374151';ctx.beginPath();ctx.ellipse(0,2,6,11,0,0,7);ctx.fill();
+  ctx.fillStyle='#dc2626';ctx.beginPath();ctx.ellipse(0,9,5,6.5,0,0,7);ctx.fill();
+  ctx.fillStyle='#111827';ctx.beginPath();ctx.arc(0,-10,4.6,0,7);ctx.fill();
+  ctx.strokeStyle='#111827';ctx.beginPath();ctx.moveTo(0,-13);ctx.lineTo(0,-21);ctx.stroke();
+  ctx.restore();
+ }
+ function drawMan(){
+  ctx.fillStyle='#fef3c7';ctx.fillRect(0,0,W,H-70);
+  ctx.fillStyle='#fde68a';ctx.fillRect(0,H-70,W,70);
+  ctx.fillStyle='#1e3a5f';rr(276,30,92,92,8);ctx.fill();
+  ctx.fillStyle='#fde68a';ctx.beginPath();ctx.arc(338,58,15,0,7);ctx.fill();
+  ctx.fillStyle='#1e3a5f';ctx.beginPath();ctx.arc(347,52,13,0,7);ctx.fill();
+  ctx.strokeStyle='#92400e';ctx.lineWidth=4;rr(276,30,92,92,8);ctx.stroke();
+  ctx.fillStyle='#92400e';ctx.fillRect(20,H-58,360,14);
+  ctx.fillRect(28,H-44,12,26);ctx.fillRect(360,H-44,12,26);
+  ctx.fillStyle='#7c2d12';ctx.fillRect(20,H-118,16,74);
+  ctx.fillStyle='#f8fafc';rr(30,H-92,344,36,10);ctx.fill();
+  ctx.fillStyle='#e0f2fe';rr(40,H-112,88,32,12);ctx.fill();
+  ctx.fillStyle='#3b82f6';rr(116,H-100,246,46,14);ctx.fill();
+  ctx.fillStyle='#1d4ed8';rr(116,H-100,246,15,8);ctx.fill();
+  ctx.fillStyle='#fcd9b8';ctx.beginPath();ctx.arc(headX,headY,27,0,7);ctx.fill();
+  ctx.fillStyle='#6b7280';ctx.beginPath();ctx.arc(headX,headY-7,27,Math.PI*1.08,Math.PI*1.92);ctx.fill();
+  const awake=state==='over';
+  ctx.strokeStyle='#1f2937';ctx.lineWidth=2.4;ctx.lineCap='round';
+  if(awake){
+   ctx.fillStyle='#1f2937';
+   ctx.beginPath();ctx.arc(headX-10,headY-2,3.2,0,7);ctx.fill();
+   ctx.beginPath();ctx.arc(headX+10,headY-2,3.2,0,7);ctx.fill();
+   ctx.beginPath();ctx.moveTo(headX-16,headY-13);ctx.lineTo(headX-4,headY-9);ctx.stroke();
+   ctx.beginPath();ctx.moveTo(headX+16,headY-13);ctx.lineTo(headX+4,headY-9);ctx.stroke();
+   ctx.beginPath();ctx.arc(headX,headY+20,9,Math.PI*1.15,Math.PI*1.85);ctx.stroke();
+  }else{
+   ctx.beginPath();ctx.arc(headX-10,headY-5,6,Math.PI*0.15,Math.PI*0.85);ctx.stroke();
+   ctx.beginPath();ctx.arc(headX+10,headY-5,6,Math.PI*0.15,Math.PI*0.85);ctx.stroke();
+   ctx.beginPath();ctx.arc(headX,headY+7,5,Math.PI*0.1,Math.PI*0.9);ctx.stroke();
+   ctx.fillStyle='#64748b';const zo=Math.sin(t*0.002)*3;
+   ctx.font='900 14px sans-serif';ctx.fillText('Z',headX+32,headY-24+zo);
+   ctx.font='900 19px sans-serif';ctx.fillText('Z',headX+45,headY-40+zo);
+   ctx.font='900 25px sans-serif';ctx.fillText('Z',headX+61,headY-60+zo);
+  }
+  if(bites>0){const bp=[[17,-14],[23,5],[-21,-11]];for(let i=0;i<bites&&i<3;i++){ctx.fillStyle='#ef4444';ctx.beginPath();ctx.arc(headX+bp[i][0],headY+bp[i][1],5.5,0,7);ctx.fill();ctx.fillStyle='#fca5a5';ctx.beginPath();ctx.arc(headX+bp[i][0]-1.5,headY+bp[i][1]-1.5,2,0,7);ctx.fill();}}
+  if(t-biteFlash<350){ctx.strokeStyle='rgba(239,68,68,'+(1-(t-biteFlash)/350)+')';ctx.lineWidth=3;ctx.beginPath();ctx.arc(headX,headY,34,0,7);ctx.stroke();}
+ }
+ function drawFx(){
+  for(const s of fx){const a=Math.max(0,1-s.age/s.life);ctx.save();ctx.globalAlpha=a;
+   if(s.kind==='splat'){ctx.fillStyle='#65a30d';for(let i=0;i<7;i++){const an=i/7*6.283+s.seed,d=6+(s.age/s.life)*16;ctx.beginPath();ctx.arc(s.x+Math.cos(an)*d,s.y+Math.sin(an)*d,3.4,0,7);ctx.fill();}ctx.fillStyle='#4d7c0f';ctx.beginPath();ctx.arc(s.x,s.y,6,0,7);ctx.fill();}
+   else{ctx.strokeStyle='#f59e0b';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(s.x,s.y,6+(s.age/s.life)*22,0,7);ctx.stroke();}
+   ctx.restore();}
+ }
+ function panel(l1,l2,l3){
+  ctx.fillStyle='rgba(15,23,42,0.72)';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font='900 30px sans-serif';ctx.fillText(l1,W/2,196);
+  ctx.font='700 16px sans-serif';ctx.fillText(l2,W/2,232);
+  ctx.fillStyle='#facc15';ctx.font='900 21px sans-serif';ctx.fillText(l3,W/2,292);
+  ctx.textAlign='left';
+ }
+ function loop(ts){
+  raf=requestAnimationFrame(loop);
+  const dt=lastT?Math.min(50,ts-lastT):16;lastT=ts;t=ts;
+  if(!paused){
+   if(state==='play'){
+    spawnIn-=dt;if(spawnIn<=0){spawn();spawnIn=spawnInt()*(0.75+Math.random()*0.5);}
+    for(let i=bugs.length-1;i>=0;i--){const b=bugs[i];b.age+=dt*0.06;
+     const dx=b.tx-b.x,dy=b.ty-b.y,d=Math.hypot(dx,dy)||1;
+     const wob=Math.sin(b.age*0.55+b.ph)*b.wob*0.03,step=dt/16.7;
+     b.x+=(dx/d*b.sp+(-dy/d)*wob*b.sp)*step;
+     b.y+=(dy/d*b.sp+(dx/d)*wob*b.sp)*step;
+     if(d<20){bugs.splice(i,1);bites++;biteFlash=t;stage.querySelector('#mqBites').textContent=bites;blip(140);
+      if(bites>=3){state='over';overAt=t;if(kills>best){best=kills;try{localStorage.setItem('mqBest',best);}catch(e){}stage.querySelector('#mqBest').textContent=best;}}}
+    }
+   }
+   for(let i=fx.length-1;i>=0;i--){fx[i].age+=dt;if(fx[i].age>=fx[i].life)fx.splice(i,1);}
+  }
+  ctx.clearRect(0,0,W,H);
+  drawMan();
+  bugs.forEach(drawBug);
+  drawFx();
+  if(state==='start')panel('🦟 Mosquito Smash','Squash the mosquitoes before they bite!','▶ Tap to Start');
+  else if(state==='over')panel('😡 He woke up!','TOTAL KILLS: '+kills+'  •  Best: '+best,'↻ Tap to Play Again');
+ }
+ function tap(e){
+  e.preventDefault();
+  const r=cv.getBoundingClientRect();
+  const p={x:(e.clientX-r.left)*(W/r.width),y:(e.clientY-r.top)*(H/r.height)};
+  if(state==='start'){reset();blip(520);return;}
+  if(state==='over'){if(t-overAt>700)reset();return;}
+  if(paused)return;
+  for(let i=bugs.length-1;i>=0;i--){const b=bugs[i];
+   if(Math.hypot(b.x-p.x,b.y-p.y)<32){bugs.splice(i,1);kills++;stage.querySelector('#mqKills').textContent=kills;fx.push({kind:'splat',x:b.x,y:b.y,age:0,life:380,seed:Math.random()*6});blip(760);return;}}
+  fx.push({kind:'ring',x:p.x,y:p.y,age:0,life:260,seed:0});
+ }
+ cv.addEventListener('pointerdown',tap);
+ raf=requestAnimationFrame(loop);
+ cleanup=()=>{cancelAnimationFrame(raf);cv.removeEventListener('pointerdown',tap);};
+}
+function initGeneric(id){const g=GAMES.find(x=>x.id===id);if(!g)return;const E={target:engTarget,catch:engCatch,dodge:engDodge,race:engRace,shooter:engShooter,pong:engPong,jump:engJump,timing:engTiming,reaction:engReaction,quiz:engQuiz,simon:engSimon,memgrid:engMemgrid,anagram:engAnagram,hangman:engHangman,typing:engTyping,numguess:engNumguess,rps:engRPS,dice:engDice,hl:engHL,connect4:engConnect4,tttx:engTTTX,reversi:engReversi,lights:engLights,sliding:engSliding,hanoi:engHanoi,sudoku:engSudoku,flood:engFlood,maze:engMaze,snake2:engSnake2,flappy2:engFlappy2,breakout2:engBreakout2,tiles:engTiles,stroop:engStroop,reflex:engReflex,odd:engOdd,pop:engPop,stack:engStack,penalty:engPenalty,coin:engCoin,war:engWar,blackjack:engBlackjack,wordle:engWordle,seq:engSeq,clicker:engClicker,mosquito:engMosquito}[g.eng];if(E)E(g);}
 function rand(a){return a[Math.floor(Math.random()*a.length)];}
 function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
@@ -1159,7 +1287,7 @@ openGame('snake',true);
     bar.id='appDlBar';
     bar.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#111827;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;padding:9px 12px;font-family:system-ui,sans-serif;font-size:14px;box-shadow:0 -2px 10px rgba(0,0,0,.25)';
     var txt=document.createElement('span');
-    txt.textContent='\uD83D\uDCF1 Get the App \u2014 All 500 Games, Works Without WiFi';
+    txt.textContent='\uD83D\uDCF1 Get the App \u2014 All 501 Games, Works Without WiFi';
     var a=document.createElement('a');
     a.href='https://github.com/ub520117-wq/html5-games/releases/download/v1.0/html5-games.apk';
     a.textContent='Download';
